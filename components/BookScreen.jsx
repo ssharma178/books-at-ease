@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { View, Text, StyleSheet, Image } from 'react-native';
+import { View, Text, StyleSheet, Image, Button } from 'react-native';
 import { Avatar } from 'react-native-elements/dist/avatar/Avatar';
 import { TouchableOpacity } from 'react-native'
 import '../assets/logo.png'
@@ -7,18 +7,30 @@ import '../assets/logo.png'
 
 const BookScreen = ( {route, navigation} ) => {
     const {bookId} = route.params;
-    const [book, setBook] = useState({bookDes: "", authors: [], bookCover: 0})
+    const [book, setBook] = useState({bookPub: "", authors: [], bookCover: 0})
+    const [authorName, setAuthorName] = useState("")
 
     useEffect(()=> {
         fetch("https://openlibrary.org/"+bookId+".json")  //gets book from home screen
         .then(response => response.json())
-        .then(data => setBook({bookDes: data.description, authors:data.authors, bookCover:data.covers[1]})) //sets books' data
+        .then(data => setBook({bookPub: data.first_publish_date, authors:data.authors[0].author, bookCover:data.covers[1]})) //sets books' data
         .catch((error) => {
             Alert.error('Error', error)
         });
     }, []);
     
-
+    const getAuthor = (key) => {
+        fetch("https://openlibrary.org"+key+".json")
+        .then(response => response.json())
+        .then(data => setAuthorName(data.name))
+    }
+    
+    //only gets author's name if the key is not undefined. 
+    //It is important as the API gives a lot of errors and the app crashes otherwise.
+    if (book.authors.key !== undefined) {
+        getAuthor(book.authors.key)
+    } 
+    
     return(
         <View>
             <View style={styles.container}>
@@ -36,10 +48,18 @@ const BookScreen = ( {route, navigation} ) => {
                     />
             </View>
             <View style={styles.bookContainer}>
-                {/* <Button onPress={() => console.log((bookCover))} title="Console" /> */}
+                <Button onPress={() => console.log(book.authors.key)} title="Console" />
                 <Image source={{uri:'https://covers.openlibrary.org/b/id/'+book.bookCover+'.jpg'}} style={{width: 300, height: 400, alignSelf: "center", borderRadius: 15}}/>
-                <Text>{book.bookDes}</Text>
-                {/* <Text style={{color:"black"}}> Hi {bookId} </Text> */}
+
+                {/* Displays text only if publishing date is available  */}
+                {book.bookPub !== undefined && 
+                    <Text>Published on: {book.bookPub}</Text> 
+                } 
+
+                {authorName !== undefined && 
+                    <Text>Author: {authorName}</Text>
+                }
+                
             </View>
         </View>
     );
