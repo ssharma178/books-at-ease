@@ -5,7 +5,7 @@ import { Image } from 'react-native-elements/dist/image/Image';
 import { Avatar } from 'react-native-elements/dist/avatar/Avatar';
 import { TouchableOpacity } from 'react-native'
 
-const HomeScreen = (props) => {
+const HomeScreen = ({route, navigation}, props) => {
     const [userQuery, setUserQuery] = useState('');
     const [books, setBooks] = useState([]);
 
@@ -33,7 +33,8 @@ const HomeScreen = (props) => {
     //     .then(data => )
     // }
 
-    const navigation = props.navigation;
+    const {setSignedIn} = route.params;
+    const {signedIn} = route.params;
 
     return(
         <View style={{flexDirection: 'column', flex:1, height:"100%", width: "100%", backgroundColor:"purple"}}>
@@ -48,7 +49,7 @@ const HomeScreen = (props) => {
                     activeOpacity={0.7}
                     overlayContainerStyle={{backgroundColor: "#f4c384"}}
                     style={{height: 50, width: 50, marginLeft: 150}}
-                    onPress={() => alert("Hi")}
+                    onPress={() => navigation.push("UserScreen", {setSignedIn: setSignedIn, signedIn: signedIn})}
                     />
             </View>
             <View style={{flex:3}}>
@@ -58,7 +59,7 @@ const HomeScreen = (props) => {
                 <FlatList
                 data={books}
                 numColumns="2"
-                renderItem={({item}) => <View style={styles.bookContainer}><Button onPress={() => navigation.navigate('BookScreen', {bookId: item.key})} title={item.title} style={styles.text} /></View>}
+                renderItem={({item}) => <View style={styles.bookContainer}><Button onPress={() => navigation.navigate('BookScreen', {bookId: item.key, signedIn: signedIn, setSignedIn: setSignedIn})} title={item.title} style={styles.text} /></View>}
                 />
 
             </View>
