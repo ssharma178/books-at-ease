@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
         alignSelf:"center", 
         justifyContent: "center",
         flex: 1,
-        backgroundColor: "black", 
+        backgroundColor: '#E98A15', 
         width:"100%"
     },
     inputContainer: {
@@ -94,12 +94,11 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
     },
     button: {
-        backgroundColor: "#DB5461",
-        width: '70%',
-        padding: 15,
-        borderRadius: 10,
-        alignItems: 'center',
+        backgroundColor: "#F4C384",
+        borderRadius: 15, 
+        padding: 20,
         margin: 10,
+        alignItems: "center", 
     },
     input: {
         backgroundColor: 'white',

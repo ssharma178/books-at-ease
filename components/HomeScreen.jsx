@@ -37,7 +37,7 @@ const HomeScreen = ({route, navigation}, props) => {
     const {signedIn} = route.params;
 
     return(
-        <View style={{flexDirection: 'column', flex:1, height:"100%", width: "100%", backgroundColor:"purple"}}>
+        <View style={{flexDirection: 'column', flex:1, height:"100%", width: "100%", backgroundColor: "#E98A15"}}>
             <View style={styles.container}>
                 <TouchableOpacity onPress={() => navigation.push("HomeScreen")}>
                     <Image source={require('../assets/logo.png')} style={{ width:120, height:70}}/>
@@ -48,13 +48,13 @@ const HomeScreen = ({route, navigation}, props) => {
                     icon={{name: 'user', type: 'font-awesome'}} 
                     activeOpacity={0.7}
                     overlayContainerStyle={{backgroundColor: "#f4c384"}}
-                    style={{height: 50, width: 50, marginLeft: 150}}
+                    style={{height: 50, width: 50, marginLeft: 155}}
                     onPress={() => navigation.push("UserScreen", {setSignedIn: setSignedIn, signedIn: signedIn})}
                     />
             </View>
-            <View style={{flex:3}}>
+            <View style={{flex:3, alignSelf: "center"}}>
                 <View >
-                    <Text style={{backgroundColor: "#E98A15", color: "#FFFCF2", margin: 10, fontSize:18}}>Recommended for you</Text>
+                    <Text style={{ color: "#FFFCF2", margin: 10, fontSize:18}}>Recommended for you</Text>
                 </View>
                 <FlatList
                 data={books}
@@ -71,12 +71,13 @@ const HomeScreen = ({route, navigation}, props) => {
 const styles = StyleSheet.create({
     container : {
         backgroundColor: '#E98A15',
+        alignSelf: "center",
         alignItems: "center",
-        padding: 30,
+        padding: 10,
         paddingTop: 50,
         flexDirection: "row", 
-        height: "13%", 
-        width:"100%",
+        height: "20%", 
+        width:"90%",
     },
     bookContainer: {
         backgroundColor: "#DB5461",
