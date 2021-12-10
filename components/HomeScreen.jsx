@@ -4,6 +4,7 @@ import { Button } from 'react-native-elements/dist/buttons/Button';
 import { Image } from 'react-native-elements/dist/image/Image';
 import { Avatar } from 'react-native-elements/dist/avatar/Avatar';
 import { TouchableOpacity } from 'react-native'
+import { TextInput } from 'react-native-gesture-handler';
 
 const HomeScreen = ({route, navigation}, props) => {
     const [userQuery, setUserQuery] = useState('');
@@ -21,17 +22,11 @@ const HomeScreen = ({route, navigation}, props) => {
     const getBooks = () => {
         fetch("https://openlibrary.org/search.json?q="+userQuery)
         .then(response => response.json())
-        .then(data => setBooks(data))
+        .then(data => setBooks(data.docs))
         .catch((error) => {
-            Alert.error('Error', error)
+            alert.error('Error', error)
         })
     }
-
-    // const getBook = (key) => {
-    //     fetch("https://openlibrary.org/"+key)
-    //     .then(response => response.json())
-    //     .then(data => )
-    // }
 
     const {setSignedIn} = route.params;
     const {signedIn} = route.params;
@@ -53,14 +48,37 @@ const HomeScreen = ({route, navigation}, props) => {
                     />
             </View>
             <View style={{flex:3, alignSelf: "center"}}>
+                <View style={{alignSelf: "center"}}>
+                    <Text style={styles.text}>What do you feel like reading today?</Text>
+                    <TextInput 
+                        value={userQuery} 
+                        onChangeText={(txt) => setUserQuery(txt)} 
+                        style={styles.textInput} 
+                        placeholder='Start by typing name of book, author, etc' 
+                        placeholderTextColor= "#CE2D4F"/>
+                    <TouchableOpacity style={styles.button} 
+                        onPress={() => { 
+                            getBooks(userQuery) 
+                            setUserQuery('')}} >
+                        <Text style={{ color: "#DB5461"}}>
+                            Search
+                        </Text>
+                    </TouchableOpacity>    
+                </View>
                 <View >
                     <Text style={{ color: "#FFFCF2", margin: 10, fontSize:18}}>Recommended for you</Text>
+                    <FlatList
+                    data={books}
+                    numColumns="2"
+                    renderItem={({item}) => 
+                        <View style={styles.bookContainer}>
+                            <Button 
+                                onPress={() => navigation.navigate('BookScreen', {bookId: item.key, signedIn: signedIn, setSignedIn: setSignedIn, bookLink: item.ia})} 
+                                title={item.title} 
+                                style={styles.text} />
+                        </View>}
+                    />
                 </View>
-                <FlatList
-                data={books}
-                numColumns="2"
-                renderItem={({item}) => <View style={styles.bookContainer}><Button onPress={() => navigation.navigate('BookScreen', {bookId: item.key, signedIn: signedIn, setSignedIn: setSignedIn, bookLink: item.ia})} title={item.title} style={styles.text} /></View>}
-                />
 
             </View>
         </View>
@@ -88,6 +106,23 @@ const styles = StyleSheet.create({
     }, 
     text: {
         color: "#FFFCF2", 
+        fontSize: 17
+    }, 
+    textInput: {
+        backgroundColor: "#E3E2C2", 
+        height: 30, 
+        borderRadius: 15,
+        margin: 10, 
+        width: 320, 
+        color: "#CE2D4F",
+        padding: 10,
+    }, 
+    button: {
+        backgroundColor: "#F4C384",
+        borderRadius: 20, 
+        padding: 10,
+        margin: 5,
+        alignItems: "center",
     }
 });
 
