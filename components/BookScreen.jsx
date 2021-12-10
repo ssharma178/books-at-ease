@@ -3,24 +3,28 @@ import { View, Text, StyleSheet, Image, Button } from 'react-native';
 import { Avatar } from 'react-native-elements/dist/avatar/Avatar';
 import { TouchableOpacity } from 'react-native'
 import '../assets/logo.png'
+import { Linking } from 'react-native';
+import { ScrollView } from 'react-native-gesture-handler';
 
 
 const BookScreen = ( {route, navigation} ) => {
     const {bookId} = route.params;
     const {signedIn} = route.params;
     const {setSignedIn} = route.params;
-    const [book, setBook] = useState({bookPub: "", authors: [], bookCover: 0})
+    const {bookLink} = route.params;
+    const [book, setBook] = useState({bookPub: "", authors: [], bookCover: 0, bookName: ""})
     const [authorName, setAuthorName] = useState("")
 
     useEffect(()=> {
         fetch("https://openlibrary.org/"+bookId+".json")  //gets book from home screen
         .then(response => response.json())
-        .then(data => setBook({bookPub: data.first_publish_date, authors:data.authors[0].author, bookCover:data.covers[1]})) //sets books' data
+        .then(data => setBook({bookPub: data.first_publish_date, authors:data.authors[0].author, bookCover:data.covers[1], bookName: data.title})) //sets books' data
         .catch((error) => {
             Alert.error('Error', error)
         });
     }, []);
     
+    //gets author's name
     const getAuthor = (key) => {
         fetch("https://openlibrary.org"+key+".json")
         .then(response => response.json())
@@ -34,12 +38,12 @@ const BookScreen = ( {route, navigation} ) => {
     } 
     
     return(
-        <View>
+        <View style={{backgroundColor: "#E98A15", flex: 1}}>
             <View style={styles.container}>
                 <TouchableOpacity onPress={() => navigation.navigate("HomeScreen")}>
                     <Image source={require('../assets/logo.png')} style={{ width:120, height:70}}/>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => navigation.goBack()} style={[styles.button, {marginLeft: 35}]}>
+                <TouchableOpacity onPress={() => navigation.goBack()} style={[styles.button, {marginLeft: 20 }]}>
                     <Text style={styles.text}>
                         Go Back 
                     </Text>
@@ -55,18 +59,36 @@ const BookScreen = ( {route, navigation} ) => {
                     />
             </View>
             <View style={styles.bookContainer}>
-                <Button onPress={() => console.log(book.authors.key)} title="Console" />
+                {book.bookName !== undefined && 
+                    <Text style={styles.h3}>
+                        {book.bookName}
+                    </Text>
+                }
+
                 <Image source={{uri:'https://covers.openlibrary.org/b/id/'+book.bookCover+'.jpg'}} style={{width: 300, height: 400, alignSelf: "center", borderRadius: 15}}/>
 
                 {/* Displays text only if publishing date is available  */}
-                {book.bookPub !== undefined && 
-                    <Text>Published on: {book.bookPub}</Text> 
-                } 
+                <View style={styles.textContainer} >
+                    {book.bookPub !== undefined && 
+                        <Text style={styles.h3}>
+                            Published on: {book.bookPub}
+                        </Text> 
+                    } 
 
-                {authorName !== undefined && 
-                    <Text>Author: {authorName}</Text>
-                }
-                
+                    {authorName !== undefined && 
+                        <Text style={styles.h3}>
+                            Author: {authorName}
+                        </Text>
+                    }
+
+                    {bookLink !== undefined &&
+                        <TouchableOpacity style={styles.button} onPress={() => Linking.openURL("https://openlibrary.org/borrow/ia/"+bookLink)} >
+                            <Text style={styles.h3}>
+                                Read
+                            </Text>
+                        </TouchableOpacity>
+                    }
+                </View>
             </View>
         </View>
     );
@@ -89,12 +111,11 @@ const styles = StyleSheet.create({
         borderRadius: 15, 
         padding: 30,
         margin: 20,
+        marginTop: 0,
         width: "90%",
-        alignSelf: "center"
+        alignSelf: "center",
+        maxHeight: "80%"
     }, 
-    text: {
-        color: "#FFFCF2", 
-    },
     button: {
         backgroundColor: "#F4C384",
         borderRadius: 15, 
@@ -102,6 +123,18 @@ const styles = StyleSheet.create({
         margin: 10,
         alignItems: "center", 
     },
+    h3 : {
+        color: "#FFFCF2",
+        fontSize: 20, 
+        margin: 5
+    }, 
+    textContainer: {
+        marginTop: 5
+    }, 
+    text: {
+        color: "#DB5461",
+        fontWeight: "bold"
+    }
 });
 
 export default BookScreen

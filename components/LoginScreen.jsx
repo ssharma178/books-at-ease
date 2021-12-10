@@ -108,6 +108,6 @@ const styles = StyleSheet.create({
         marginTop: 5,
       },
     text: {
-        color: "#FFFCF2", 
+        color: "#DB5461", 
     }
 })

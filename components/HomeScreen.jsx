@@ -59,7 +59,7 @@ const HomeScreen = ({route, navigation}, props) => {
                 <FlatList
                 data={books}
                 numColumns="2"
-                renderItem={({item}) => <View style={styles.bookContainer}><Button onPress={() => navigation.navigate('BookScreen', {bookId: item.key, signedIn: signedIn, setSignedIn: setSignedIn})} title={item.title} style={styles.text} /></View>}
+                renderItem={({item}) => <View style={styles.bookContainer}><Button onPress={() => navigation.navigate('BookScreen', {bookId: item.key, signedIn: signedIn, setSignedIn: setSignedIn, bookLink: item.ia})} title={item.title} style={styles.text} /></View>}
                 />
 
             </View>
