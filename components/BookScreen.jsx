@@ -7,6 +7,8 @@ import '../assets/logo.png'
 
 const BookScreen = ( {route, navigation} ) => {
     const {bookId} = route.params;
+    const {signedIn} = route.params;
+    const {setSignedIn} = route.params;
     const [book, setBook] = useState({bookPub: "", authors: [], bookCover: 0})
     const [authorName, setAuthorName] = useState("")
 
@@ -37,14 +39,19 @@ const BookScreen = ( {route, navigation} ) => {
                 <TouchableOpacity onPress={() => navigation.navigate("HomeScreen")}>
                     <Image source={require('../assets/logo.png')} style={{ width:120, height:70}}/>
                 </TouchableOpacity>
+                <TouchableOpacity onPress={() => navigation.goBack()} style={[styles.button, {marginLeft: 35}]}>
+                    <Text style={styles.text}>
+                        Go Back 
+                    </Text>
+                </TouchableOpacity>
                 <Avatar 
                     rounded 
                     size="medium"  
                     icon={{name: 'user', type: 'font-awesome'}} 
                     activeOpacity={0.7}
                     overlayContainerStyle={{backgroundColor: "#f4c384"}}
-                    style={{height: 50, width: 50, marginLeft: 150}}
-                    onPress={() => alert("Hi")}
+                    style={{height: 50, width: 50, marginLeft: 30}}
+                    onPress={() => navigation.push("UserScreen", {signedIn: signedIn, setSignedIn: setSignedIn})}
                     />
             </View>
             <View style={styles.bookContainer}>
@@ -69,12 +76,13 @@ const BookScreen = ( {route, navigation} ) => {
 const styles = StyleSheet.create({
     container : {
         backgroundColor: '#E98A15',
+        alignSelf: "center",
         alignItems: "center",
-        padding: 30,
+        padding: 10,
         paddingTop: 50,
         flexDirection: "row", 
-        height: "13%", 
-        width:"100%",
+        height: "20%", 
+        width:"90%",
     },
     bookContainer: {
         backgroundColor: "#DB5461",
@@ -86,7 +94,14 @@ const styles = StyleSheet.create({
     }, 
     text: {
         color: "#FFFCF2", 
-    }
+    },
+    button: {
+        backgroundColor: "#F4C384",
+        borderRadius: 15, 
+        padding: 20,
+        margin: 10,
+        alignItems: "center", 
+    },
 });
 
 export default BookScreen
